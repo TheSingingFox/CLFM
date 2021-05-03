@@ -48,7 +48,7 @@
 (defun make-executable ()
   (sb-ext:save-lisp-and-die "clfm"
 			    :toplevel (lambda ()
-					(app-main))
+					(app-main t))
 			    :executable t
 			    :purify t))
 
@@ -62,7 +62,7 @@
           when (string= "ttf" (file-extension f))
             do ;; (format t "Font: ~a" f)
                (loop for size in '(8 10 12 14 16 18 24 48 72)
-                     do (mcclim-truetype::make-truetype-font port f size))))
+                     do (clim-clx::make-truetype-font port f size))))
   )
 
 (defun gather-users-uid-gid ()
@@ -171,11 +171,14 @@
   (format pane "COMMAND: ")
   (stream-increment-cursor-position pane 5 0))
 
-(defun app-main ()
+(defun app-main (&optional (debugger t))
   (initialize-fonts)
   (handler-case (load "~/.clfm.d/init.lisp")
     (t () ()))
-  (run-frame-top-level (make-application-frame 'clfm)))
+  (if debugger
+      (clim-debugger:with-debugger ()
+	(run-frame-top-level (make-application-frame 'clfm)))
+      (run-frame-top-level (make-application-frame 'clfm))))
 
 (defun path> (one two)
   (string> (namestring one) (namestring two)))

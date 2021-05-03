@@ -9,6 +9,7 @@
   :depends-on (#:osicat
 	       #:alexandria
 	       #:mcclim
+	       #:clim-debugger
 	       #:slim)
   :components ((:file "package")
                (:file "clfm-2")
